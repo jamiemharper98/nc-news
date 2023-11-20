@@ -1,3 +1,7 @@
+exports.wrongPath = (req, res, next) => {
+  return Promise.reject({ status: 400, msg: "Bad request" }).catch(next);
+};
+
 exports.psqlErrors = (err, req, res, next) => {
   next(err);
 };
