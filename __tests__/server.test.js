@@ -42,7 +42,7 @@ describe("/api/topics", () => {
   });
 });
 
-xdescribe("/api/articles", () => {
+describe.only("/api/articles", () => {
   test("GET:200 responds with an array of article objects", () => {
     return request(app)
       .get("/api/articles")
