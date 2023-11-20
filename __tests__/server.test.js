@@ -116,20 +116,21 @@ describe("/api/articles/:article_id/comments", () => {
         });
       });
   });
+  test("GET:200 responds with empty array if article exists but no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(0);
+        expect(comments).toMatchObject([]);
+      });
+  });
   test("GET:404 responds with no comments if incorrect id", () => {
     return request(app)
       .get("/api/articles/999/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("No comments found!");
-      });
-  });
-  test("GET:404 responds with comments not found if correct article id has no comments", () => {
-    return request(app)
-      .get("/api/articles/2/comments")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("No comments found!");
+        expect(body.msg).toBe("Article ID does not exist!");
       });
   });
   test("GET:400 responds with bad request if not number for id search", () => {
