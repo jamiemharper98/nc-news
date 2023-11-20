@@ -74,7 +74,8 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
-describe("/api", () =>
+
+describe("/api", () => {
   test("GET:200 responds with object describing all the end points", () => {
     return request(app)
       .get("/api")
@@ -91,4 +92,39 @@ describe("/api", () =>
           }
         }
       });
-  }));
+  });
+});
+
+xdescribe("/api/articles/:article_id/comments", () => {
+  test("GET:200 responds with array of comments for given article id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
+          expect(typeof comment.comment_id).toBe("string");
+          expect(typeof comment.votes).toBe("number");
+          expect(typeof comment.created_at).toBe("string");
+          expect(typeof comment.author).toBe("string");
+          expect(typeof comment.body).toBe("string");
+        });
+      });
+  });
+  test("GET:404 responds with article id not found", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article ID not found!");
+      });
+  });
+  test("GET:400 responds with bad request if not number for id search", () => {
+    return request(app)
+      .get("/api/articles/banana/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+});
