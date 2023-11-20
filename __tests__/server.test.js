@@ -99,7 +99,8 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
-describe("/api", () =>
+
+describe("/api", () => {
   test("GET:200 responds with object describing all the end points", () => {
     return request(app)
       .get("/api")
@@ -116,4 +117,52 @@ describe("/api", () =>
           }
         }
       });
-  }));
+  });
+});
+
+describe("/api/articles/:article_id/comments", () => {
+  test("GET:200 responds with array of comments for given article id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(11);
+        expect(comments).toBeSortedBy("created_at");
+        comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          });
+        });
+      });
+  });
+  test("GET:200 responds with empty array if article exists but no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(0);
+        expect(comments).toMatchObject([]);
+      });
+  });
+  test("GET:404 responds with no comments if incorrect id", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article ID does not exist!");
+      });
+  });
+  test("GET:400 responds with bad request if not number for id search", () => {
+    return request(app)
+      .get("/api/articles/banana/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+});
