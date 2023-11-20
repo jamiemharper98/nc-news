@@ -66,6 +66,7 @@ describe("/api/articles", () => {
       });
   });
 });
+
 describe("/api/articles/:article_id", () => {
   test("GET:200 responds with article by its id", () => {
     return request(app)
@@ -99,7 +100,8 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
-describe("/api", () =>
+
+describe("/api", () => {
   test("GET:200 responds with object describing all the end points", () => {
     return request(app)
       .get("/api")
@@ -116,25 +118,126 @@ describe("/api", () =>
           }
         }
       });
-  }));
+  });
+});
 
-xtest("post:201 respond with posted comment when passed username and body", () => {
-  const data = {
-    username: "butter_bridge",
-    body: "A comment by butter bridge",
-  };
-  return request(app)
-    .post("/api/articles/1/comments")
-    .send(data)
-    .status(201)
-    .then(({comment}) => {
-      expect(comment).toMatchObject({
-        author: 'butter_bridge',
-        body: 'A comment by butter bridge',
-        article_id: 1,
-        votes: 0,
-        comment_id: 19,
-        created_at: expect.any(String)
-      })
+describe("/api/articles/:article_id/comments", () => {
+  describe("GET", () => {
+    test("GET:200 responds with array of comments for given article id", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toBe(11);
+          expect(comments).toBeSortedBy("created_at");
+          comments.forEach((comment) => {
+            expect(comment.article_id).toBe(1);
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            });
+          });
+        });
     });
+    test("GET:200 responds with empty array if article exists but no comments", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toBe(0);
+          expect(comments).toMatchObject([]);
+        });
+    });
+    test("GET:404 responds with no comments if incorrect id", () => {
+      return request(app)
+        .get("/api/articles/999/comments")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article ID does not exist!");
+        });
+    });
+    test("GET:400 responds with bad request if not number for id search", () => {
+      return request(app)
+        .get("/api/articles/banana/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+  });
+  describe("POST", () => {
+    test("POST:201 respond with posted comment when passed username and body", () => {
+      const data = {
+        username: "butter_bridge",
+        body: "A comment by butter bridge",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(data)
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment).toMatchObject({
+            author: "butter_bridge",
+            body: "A comment by butter bridge",
+            article_id: 1,
+            votes: 0,
+            comment_id: 19,
+            created_at: expect.any(String),
+          });
+        });
+    });
+    test("POST:404 Article id not found", () => {
+      const data = {
+        username: "butter_bridge",
+        body: "A comment by butter bridge",
+      };
+      return request(app)
+        .post("/api/articles/999/comments")
+        .send(data)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article ID does not exist!");
+        });
+    });
+    test("POST:400 responds with bad request if not number for id search", () => {
+      const data = {
+        username: "butter_bridge",
+        body: "A comment by butter bridge",
+      };
+      return request(app)
+        .post("/api/articles/banana/comments")
+        .send(data)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+    test("POST:400 responds with bad request username missing", () => {
+      const data = {
+        body: "A comment by butter bridge",
+      };
+      return request(app)
+        .post("/api/articles/banana/comments")
+        .send(data)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request - incomplete request body");
+        });
+    });
+    test("POST:400 responds with bad request body missing", () => {
+      const data = {
+        username: "butter_bridge",
+      };
+      return request(app)
+        .post("/api/articles/banana/comments")
+        .send(data)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request - incomplete request body");
+        });
+    });
+  });
 });
