@@ -41,6 +41,39 @@ describe("/api/topics", () => {
   });
 });
 
+describe("/api/articles/:article_id", () => {
+  test("GET:200 responds with article by its id", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(typeof article.author).toBe("string");
+        expect(typeof article.title).toBe("string");
+        expect(article.article_id).toBe(1);
+        expect(typeof article.body).toBe("string");
+        expect(typeof article.topic).toBe("string");
+        expect(typeof article.created_at).toBe("string");
+        expect(typeof article.votes).toBe("number");
+        expect(typeof article.article_img_url).toBe("string");
+      });
+  });
+  test("GET:404 responds article ID not found", () => {
+    return request(app)
+      .get("/api/articles/999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article ID does not exist!");
+      });
+  });
+  test("GET:400 responds Bad request -> id not a num", () => {
+    return request(app)
+      .get("/api/articles/banana")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+});
 describe("/api", () =>
   test("GET:200 responds with object describing all the end points", () => {
     return request(app)
