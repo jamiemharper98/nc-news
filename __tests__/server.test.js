@@ -74,3 +74,21 @@ describe("/api/articles/:article_id", () => {
       });
   });
 });
+describe("/api", () =>
+  test("GET:200 responds with object describing all the end points", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body: { endpoints } }) => {
+        for (const key in endpoints) {
+          expect(typeof endpoints[key].description).toBe("string");
+          if (key !== "GET /api") {
+            expect(typeof endpoints[key].description).toBe("string");
+            expect(typeof endpoints[key].queries).toBe("object");
+            expect(Array.isArray(endpoints[key].queries)).toBe(true);
+            expect(typeof endpoints[key].exampleResponse).toBe("object");
+            expect(Array.isArray(endpoints[key].exampleResponse)).toBe(false);
+          }
+        }
+      });
+  }));
