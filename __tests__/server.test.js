@@ -3,6 +3,7 @@ const request = require("supertest");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const { topicData, userData, articleData, commentData } = require("../db/data/test-data/index");
+require("jest-sorted");
 
 beforeEach(() => seed({ topicData, userData, articleData, commentData }));
 afterAll(() => db.end());
@@ -95,34 +96,46 @@ describe("/api", () => {
   });
 });
 
-xdescribe("/api/articles/:article_id/comments", () => {
+describe("/api/articles/:article_id/comments", () => {
   test("GET:200 responds with array of comments for given article id", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body: { comments } }) => {
+        expect(comments.length).toBe(11);
+        expect(comments).toBeSortedBy("created_at");
         comments.forEach((comment) => {
           expect(comment.article_id).toBe(1);
-          expect(typeof comment.comment_id).toBe("string");
-          expect(typeof comment.votes).toBe("number");
-          expect(typeof comment.created_at).toBe("string");
-          expect(typeof comment.author).toBe("string");
-          expect(typeof comment.body).toBe("string");
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+          });
         });
       });
   });
-  test("GET:404 responds with article id not found", () => {
+  test("GET:404 responds with no comments if incorrect id", () => {
     return request(app)
       .get("/api/articles/999/comments")
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Article ID not found!");
+        expect(body.msg).toBe("No comments found!");
+      });
+  });
+  test("GET:404 responds with comments not found if correct article id has no comments", () => {
+    return request(app)
+      .get("/api/articles/2/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No comments found!");
       });
   });
   test("GET:400 responds with bad request if not number for id search", () => {
     return request(app)
       .get("/api/articles/banana/comments")
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
       });
