@@ -124,8 +124,17 @@ xtest("post:201 respond with posted comment when passed username and body", () =
     body: "A comment by butter bridge",
   };
   return request(app)
-    .post("/api/articles/:article_id/comments")
+    .post("/api/articles/1/comments")
     .send(data)
     .status(201)
-    .then(() => {});
+    .then(({comment}) => {
+      expect(comment).toMatchObject({
+        author: 'butter_bridge',
+        body: 'A comment by butter bridge',
+        article_id: 1,
+        votes: 0,
+        comment_id: 19,
+        created_at: expect.any(String)
+      })
+    });
 });
