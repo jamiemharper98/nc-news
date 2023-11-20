@@ -117,3 +117,15 @@ describe("/api", () =>
         }
       });
   }));
+
+xtest("post:201 respond with posted comment when passed username and body", () => {
+  const data = {
+    username: "butter_bridge",
+    body: "A comment by butter bridge",
+  };
+  return request(app)
+    .post("/api/articles/:article_id/comments")
+    .send(data)
+    .status(201)
+    .then(() => {});
+});
