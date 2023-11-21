@@ -74,14 +74,17 @@ describe("/api/articles/:article_id", () => {
         .get("/api/articles/1")
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(typeof article.author).toBe("string");
-          expect(typeof article.title).toBe("string");
-          expect(article.article_id).toBe(1);
-          expect(typeof article.body).toBe("string");
-          expect(typeof article.topic).toBe("string");
-          expect(typeof article.created_at).toBe("string");
-          expect(typeof article.votes).toBe("number");
-          expect(typeof article.article_img_url).toBe("string");
+          expect(article).toMatchObject({
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: expect.any(String),
+            votes: 100,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          });
         });
     });
     test("GET:404 responds article ID not found", () => {
