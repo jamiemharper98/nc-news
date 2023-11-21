@@ -31,6 +31,6 @@ exports.postCommentByArticleId = (req, res, next) => {
 exports.deleteCommentById = (req, res, next) => {
   const { comment_id } = req.params;
   removeCommentByID(comment_id)
-    .then(() => res.status(204).send({}))
+    .then(() => res.sendStatus(204))
     .catch(next);
 };
