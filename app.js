@@ -4,6 +4,7 @@ const { psqlErrors, customErrors, serverErrors, wrongPath } = require("./db/erro
 const { getArticles, getArticleById, patchArticleById } = require("./controllers/articles.controller");
 const { getApi } = require("./controllers/api.controller");
 const { getCommentsByArticleId, postCommentByArticleId } = require("./controllers/comments.controller");
+const { getAllUsers } = require("./controllers/users.controller");
 const app = express();
 
 app.use(express.json());
@@ -19,6 +20,8 @@ app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", postCommentByArticleId);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/users", getAllUsers);
 
 app.use("*", wrongPath);
 app.use(psqlErrors);

@@ -11,3 +11,12 @@ exports.selectUserByUsername = (username) => {
       if (!rows.length) return Promise.reject({ status: 404, msg: "Username does not exist!" });
     });
 };
+
+exports.selectAllUsers = () => {
+  return db
+    .query(
+      `
+  SELECT * FROM users;`
+    )
+    .then(({ rows }) => rows);
+};
