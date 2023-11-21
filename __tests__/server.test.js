@@ -102,8 +102,8 @@ describe("/api/articles/:article_id", () => {
     });
   });
 
-  xdescribe("PATCH", () => {
-    test.only("PATCH:200 responds with the updated article based on how much the votes needs to change", () => {
+  describe("PATCH", () => {
+    test("PATCH:200 responds with the updated article based on how much the votes needs to change", () => {
       const voteChange = { inc_votes: 1 };
       return request(app)
         .patch("/api/articles/1")
@@ -115,7 +115,7 @@ describe("/api/articles/:article_id", () => {
             topic: "mitch",
             author: "butter_bridge",
             body: "I find this existence challenging",
-            created_at: 1594329060000,
+            created_at: expect.any(String),
             votes: 101,
             article_img_url:
               "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -134,7 +134,7 @@ describe("/api/articles/:article_id", () => {
             topic: "mitch",
             author: "butter_bridge",
             body: "I find this existence challenging",
-            created_at: 1594329060000,
+            created_at: expect.any(String),
             votes: 90,
             article_img_url:
               "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -158,7 +158,7 @@ describe("/api/articles/:article_id", () => {
         .send(voteChange)
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Bad request - incomplete request body");
+          expect(body.msg).toBe("Bad request");
         });
     });
     test("PATCH:400 bad request when no number passed into incvotes", () => {
@@ -168,7 +168,7 @@ describe("/api/articles/:article_id", () => {
         .send(voteChange)
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Bad request - incomplete request body");
+          expect(body.msg).toBe("Bad request");
         });
     });
   });

@@ -16,5 +16,10 @@ exports.getArticleById = (req, res, next) => {
 exports.patchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   const toPatch = req.body;
-  updateArticleByID(article_id, toPatch).then((article) => res.status(200).send({ article }));
+  selectArticleByID(article_id)
+    .then(() => {
+      return updateArticleByID(article_id, toPatch);
+    })
+    .then((article) => res.status(200).send({ article }))
+    .catch(next);
 };
