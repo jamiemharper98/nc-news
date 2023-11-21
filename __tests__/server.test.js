@@ -87,12 +87,12 @@ describe("/api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
-  test("GET:200 responds with empty array if no articles in topic", () => {
+  test("GET:404 responds with topic doesnt exist", () => {
     return request(app)
       .get("/api/articles?topic=banana")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(0);
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("No articles found!");
       });
   });
 });
