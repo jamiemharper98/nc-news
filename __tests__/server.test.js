@@ -151,7 +151,7 @@ describe("/api/articles/:article_id/comments", () => {
           expect(comments).toMatchObject([]);
         });
     });
-    test("GET:404 responds with no comments if incorrect id", () => {
+    test("GET:404 responds error message if article id does not exist", () => {
       return request(app)
         .get("/api/articles/999/comments")
         .expect(404)
@@ -168,6 +168,7 @@ describe("/api/articles/:article_id/comments", () => {
         });
     });
   });
+
   describe("POST", () => {
     test("POST:201 respond with posted comment when passed username and body", () => {
       const data = {
@@ -202,6 +203,19 @@ describe("/api/articles/:article_id/comments", () => {
           expect(body.msg).toBe("Article ID does not exist!");
         });
     });
+    test("POST:404 username not found", () => {
+      const data = {
+        username: "banana_bridge",
+        body: "A comment by butter bridge",
+      };
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(data)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Username does not exist!");
+        });
+    });
     test("POST:400 responds with bad request if not number for id search", () => {
       const data = {
         username: "butter_bridge",
@@ -220,7 +234,7 @@ describe("/api/articles/:article_id/comments", () => {
         body: "A comment by butter bridge",
       };
       return request(app)
-        .post("/api/articles/banana/comments")
+        .post("/api/articles/1/comments")
         .send(data)
         .expect(400)
         .then(({ body }) => {
@@ -232,7 +246,7 @@ describe("/api/articles/:article_id/comments", () => {
         username: "butter_bridge",
       };
       return request(app)
-        .post("/api/articles/banana/comments")
+        .post("/api/articles/1/comments")
         .send(data)
         .expect(400)
         .then(({ body }) => {

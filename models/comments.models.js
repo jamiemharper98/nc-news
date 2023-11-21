@@ -32,3 +32,8 @@ exports.sendCommentByArticleID = (id, { username, body }) => {
       .then(({ rows }) => rows[0]);
   }
 };
+
+exports.checkCommentBodyCorrect = ({ username, body }) => {
+  if (!body || !username) return Promise.reject({ status: 400, msg: "Bad request - incomplete request body" });
+  else return Promise.resolve();
+};
