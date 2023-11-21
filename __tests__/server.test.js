@@ -161,7 +161,7 @@ describe("/api/articles/:article_id", () => {
         });
     });
     test("PATCH:400 bad request when no number passed into incvotes", () => {
-      const voteChange = { inv_votes: "banana" };
+      const voteChange = { inc_votes: "banana" };
       return request(app)
         .patch("/api/articles/1")
         .send(voteChange)
