@@ -24,3 +24,20 @@ exports.selectArticleByID = (id) => {
     }
   });
 };
+
+exports.updateArticleByID = (id, { inc_votes }) => {
+  console.log(id);
+  console.log(inc_votes);
+  return db
+    .query(
+      `
+  UPDATE articles
+  SET votes += $2
+  WHERE article_id = $1
+  RETURNING *`,
+      [id, inc_votes]
+    )
+    .then(({ rows }) => {
+      console.log(rows[0]);
+    });
+};

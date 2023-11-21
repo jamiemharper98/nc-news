@@ -68,36 +68,109 @@ describe("/api/articles", () => {
 });
 
 describe("/api/articles/:article_id", () => {
-  test("GET:200 responds with article by its id", () => {
-    return request(app)
-      .get("/api/articles/1")
-      .expect(200)
-      .then(({ body: { article } }) => {
-        expect(typeof article.author).toBe("string");
-        expect(typeof article.title).toBe("string");
-        expect(article.article_id).toBe(1);
-        expect(typeof article.body).toBe("string");
-        expect(typeof article.topic).toBe("string");
-        expect(typeof article.created_at).toBe("string");
-        expect(typeof article.votes).toBe("number");
-        expect(typeof article.article_img_url).toBe("string");
-      });
+  describe("GET", () => {
+    test("GET:200 responds with article by its id", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(article.article_id).toBe(1);
+          expect(typeof article.body).toBe("string");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+        });
+    });
+    test("GET:404 responds article ID not found", () => {
+      return request(app)
+        .get("/api/articles/999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article ID does not exist!");
+        });
+    });
+    test("GET:400 responds Bad request -> id not a num", () => {
+      return request(app)
+        .get("/api/articles/banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
   });
-  test("GET:404 responds article ID not found", () => {
-    return request(app)
-      .get("/api/articles/999")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Article ID does not exist!");
-      });
-  });
-  test("GET:400 responds Bad request -> id not a num", () => {
-    return request(app)
-      .get("/api/articles/banana")
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Bad request");
-      });
+
+  xdescribe("PATCH", () => {
+    test.only("PATCH:200 responds with the updated article based on how much the votes needs to change", () => {
+      const voteChange = { inc_votes: 1 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(voteChange)
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toMatchObject({
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: 1594329060000,
+            votes: 101,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          });
+        });
+    });
+    test("PATCH:200 responds with the updated article - should work for minus numbers", () => {
+      const voteChange = { inc_votes: -10 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(voteChange)
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toMatchObject({
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: 1594329060000,
+            votes: 90,
+            article_img_url:
+              "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+          });
+        });
+    });
+    test("PATCH:404 Article does not exists", () => {
+      const voteChange = { inc_votes: 1 };
+      return request(app)
+        .patch("/api/articles/999")
+        .send(voteChange)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article ID does not exist!");
+        });
+    });
+    test("PATCH:400 bad request when no inc_votes tag", () => {
+      const voteChange = { banana: 1 };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(voteChange)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request - incomplete request body");
+        });
+    });
+    test("PATCH:400 bad request when no number passed into incvotes", () => {
+      const voteChange = { inc_votes: "banana" };
+      return request(app)
+        .patch("/api/articles/1")
+        .send(voteChange)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request - incomplete request body");
+        });
+    });
   });
 });
 
