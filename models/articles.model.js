@@ -24,3 +24,5 @@ exports.selectArticleByID = (id) => {
     }
   });
 };
+
+exports.updateArticleByID = (id, voteChange) => {};
