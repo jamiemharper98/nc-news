@@ -99,5 +99,10 @@
         }
       ]
     }
+  },
+  "delete /api/comments/:comment_id": {
+    "description": "responds with no content when provided with a correct comment ID to delete",
+    "queries": [],
+    "exampleResponse": {}
   }
 }

@@ -2,6 +2,7 @@ const {
   selectCommentsByArticleId,
   sendCommentByArticleID,
   checkCommentBodyCorrect,
+  removeCommentByID,
 } = require("../models/comments.models");
 const { selectUserByUsername } = require("../models/users.model");
 
@@ -24,5 +25,12 @@ exports.postCommentByArticleId = (req, res, next) => {
       return sendCommentByArticleID(article_id, comment);
     })
     .then((comment) => res.status(201).send({ comment }))
+    .catch(next);
+};
+
+exports.deleteCommentById = (req, res, next) => {
+  const { comment_id } = req.params;
+  removeCommentByID(comment_id)
+    .then(() => res.sendStatus(204))
     .catch(next);
 };
