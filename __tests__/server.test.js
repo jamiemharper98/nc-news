@@ -65,6 +65,36 @@ describe("/api/articles", () => {
         expect(articles).toBeSortedBy("created_at", { descending: true });
       });
   });
+  test("GET:200 responds with an array of article objects and can be filtered by topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(12);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            topic: "mitch",
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            article_img_url: expect.any(String),
+            comment_count: expect.any(Number),
+          });
+          expect(article.body).toBe(undefined);
+        });
+        expect(articles).toBeSortedBy("created_at", { descending: true });
+      });
+  });
+  test("GET:200 responds with empty array if no articles in topic", () => {
+    return request(app)
+      .get("/api/articles?topic=banana")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(0);
+      });
+  });
 });
 
 describe("/api/articles/:article_id", () => {
