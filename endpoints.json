@@ -115,5 +115,19 @@
         "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
       }
     }
+  },
+  "PACTH /api/comments/:comment_id": {
+    "description": "responds with the updated comment when provided with a votes change ({inc_votes:1})",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 1,
+        "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        "votes": 17,
+        "author": "butter_bridge",
+        "article_id": 9,
+        "created_at": "2018-05-30T15:59:13.341Z"
+      }
+    }
   }
 }

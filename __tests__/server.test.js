@@ -550,4 +550,71 @@ describe("/api/users/:username", () => {
         });
     });
   });
+
+  describe("PATCH", () => {
+    test("PATCH:200 responds with updated comment positive votes", () => {
+      const toSend = { inc_votes: 1 };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(toSend)
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment).toMatchObject({
+            comment_id: 1,
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 17,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: expect.any(String),
+          });
+        });
+    });
+    test("PATCH:200 responds with updated comment negative votes", () => {
+      const toSend = { inc_votes: -1 };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(toSend)
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment).toMatchObject({
+            comment_id: 1,
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 15,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: expect.any(String),
+          });
+        });
+    });
+    test("PATCH:404 Comment does not exist", () => {
+      const toSend = { inc_votes: 1 };
+      return request(app)
+        .patch("/api/comments/999")
+        .send(toSend)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Comment does not exist!");
+        });
+    });
+    test("PATCH:400 Bad request no inc_votes", () => {
+      const toSend = { banana: 1 };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(toSend)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+    test("PATCH:400 Bad request inc_votes not a number", () => {
+      const toSend = { inc_votes: "banana" };
+      return request(app)
+        .patch("/api/comments/1")
+        .send(toSend)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+  });
 });
