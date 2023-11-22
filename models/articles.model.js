@@ -1,9 +1,12 @@
 const db = require("../db/connection");
 
-exports.selectArticles = ({ topic, sort_by, order }) => {
+exports.selectArticles = ({ topic, sort_by, order, limit, p }) => {
+  if (!limit || !p) return Promise.reject({ status: 400, msg: "Bad request" });
   const dbArray = [];
   let queryString = `
-  SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT as comment_count
+  SELECT (SELECT COUNT(*)::INT FROM articles ${
+    topic ? ` WHERE articles.topic = $1 ` : ``
+  }) as total_count, articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT as comment_count
   FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
@@ -14,11 +17,22 @@ exports.selectArticles = ({ topic, sort_by, order }) => {
 
   queryString += `
   GROUP BY articles.article_id
-  ORDER BY articles.${sort_by} ${order}`;
+  ORDER BY articles.${sort_by} ${order}
+  LIMIT ${limit} OFFSET ${limit * p - limit}`;
 
   return db.query(queryString, dbArray).then(({ rows }) => {
     if (!rows.length) return Promise.reject({ status: 404, msg: "No articles found!" });
-    return rows;
+    else {
+      const articlePage = {
+        total_count: rows[0].total_count,
+        articles: rows.map((article) => {
+          const temp = { ...article };
+          delete temp.total_count;
+          return temp;
+        }),
+      };
+      return articlePage;
+    }
   });
 };
 

@@ -13,6 +13,7 @@
     "description": "serves an array of all articles defaults to sort by date in descending order",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
+      "total_count": 13,
       "articles": [
         {
           "title": "Seafood substitutions are increasing",

@@ -4,7 +4,7 @@ const { selectUserByUsername } = require("../models/users.model");
 
 exports.getArticles = (req, res, next) => {
   selectArticles(articleQuery(req.query))
-    .then((articles) => res.status(200).send({ articles }))
+    .then(({ total_count, articles }) => res.status(200).send({ total_count, articles }))
     .catch(next);
 };
 
@@ -38,13 +38,15 @@ exports.postArticle = (req, res, next) => {
 };
 
 function articleQuery(queryObj) {
-  const defaultQuery = { sort_by: "created_at", order: "DESC", topic: null };
+  const defaultQuery = { sort_by: "created_at", order: "DESC", topic: null, limit: 10, p: 1 };
 
   for (const key in queryObj) {
     if (key === "sort_by") defaultQuery[key] = columnNames.includes(queryObj[key]) ? queryObj[key] : "created_at";
     if (key === "order")
       defaultQuery[key] = orderBy.includes(queryObj[key].toUpperCase()) ? queryObj[key].toUpperCase() : "DESC";
     if (key === "topic") defaultQuery[key] = queryObj[key];
+    if (key === "limit") defaultQuery[key] = /\d/.test(queryObj[key]) ? queryObj[key] : queryObj[key] ? null : 10;
+    if (key === "p") defaultQuery[key] = /\d/.test(queryObj[key]) ? queryObj[key] : queryObj[key] ? null : 1;
   }
   return defaultQuery;
 }
