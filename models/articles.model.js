@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 
-exports.selectArticles = ({ topic }) => {
+exports.selectArticles = ({ topic, sort_by, order }) => {
   const dbArray = [];
   let queryString = `
   SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.comment_id)::INT as comment_count
@@ -14,7 +14,7 @@ exports.selectArticles = ({ topic }) => {
 
   queryString += `
   GROUP BY articles.article_id
-  ORDER BY articles.created_at DESC`;
+  ORDER BY articles.${sort_by} ${order}`;
 
   return db.query(queryString, dbArray).then(({ rows }) => {
     if (!rows.length) return Promise.reject({ status: 404, msg: "No articles found!" });
