@@ -104,5 +104,16 @@
     "description": "responds with no content when provided with a correct comment ID to delete",
     "queries": [],
     "exampleResponse": {}
+  },
+  "GET /api/users/:username": {
+    "description": "responds with a user object",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+    }
   }
 }

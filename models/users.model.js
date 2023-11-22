@@ -9,6 +9,7 @@ exports.selectUserByUsername = (username) => {
     )
     .then(({ rows }) => {
       if (!rows.length) return Promise.reject({ status: 404, msg: "Username does not exist!" });
+      else return rows[0];
     });
 };
 
