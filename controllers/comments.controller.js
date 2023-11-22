@@ -6,14 +6,14 @@ const {
 } = require("../models/comments.models");
 const { selectUserByUsername } = require("../models/users.model");
 
-exports.getCommentsByArticleId = (req, res, next) => {
+exports.getCommentsByArticleID = (req, res, next) => {
   const { article_id } = req.params;
   selectCommentsByArticleId(article_id)
     .then((comments) => res.status(200).send({ comments }))
     .catch(next);
 };
 
-exports.postCommentByArticleId = (req, res, next) => {
+exports.postCommentByArticleID = (req, res, next) => {
   const { article_id } = req.params;
   const comment = req.body;
 
@@ -28,7 +28,7 @@ exports.postCommentByArticleId = (req, res, next) => {
     .catch(next);
 };
 
-exports.deleteCommentById = (req, res, next) => {
+exports.deleteCommentByID = (req, res, next) => {
   const { comment_id } = req.params;
   removeCommentByID(comment_id)
     .then(() => res.sendStatus(204))
