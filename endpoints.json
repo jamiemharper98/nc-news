@@ -129,5 +129,22 @@
         "created_at": "2018-05-30T15:59:13.341Z"
       }
     }
+  },
+  "POST /api/articles": {
+    "description": "responds with the new article, with added defaults and a comment coun - requires an author (whose username exists), a title, a body and a topic (that exists as a topic already)",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "author": "butter_bridge",
+        "title": "butterboy",
+        "body": "butter bridge is the most buttery",
+        "topic": "mitch",
+        "article_img_url": "imgpathforbutterbridge",
+        "article_id": 14,
+        "votes": 0,
+        "comment_count": 0,
+        "created_at": "2018-05-30T15:59:13.341Z"
+      }
+    }
   }
 }

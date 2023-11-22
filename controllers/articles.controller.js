@@ -1,5 +1,6 @@
-const { selectArticles, selectArticleByID, updateArticleByID } = require("../models/articles.model");
+const { selectArticles, selectArticleByID, updateArticleByID, sendArticle } = require("../models/articles.model");
 const { columnNames, orderBy } = require("../db/data/greenlist/articles.greenlist");
+const { selectUserByUsername } = require("../models/users.model");
 
 exports.getArticles = (req, res, next) => {
   selectArticles(articleQuery(req.query))
@@ -22,6 +23,17 @@ exports.patchArticleByID = (req, res, next) => {
       return updateArticleByID(article_id, toPatch);
     })
     .then((article) => res.status(200).send({ article }))
+    .catch(next);
+};
+
+exports.postArticle = (req, res, next) => {
+  const body = req.body;
+  selectUserByUsername(body.author)
+    .then(() => {
+      return sendArticle(body);
+    })
+    .then((article) => selectArticleByID(article.article_id))
+    .then((article) => res.status(201).send({ article }))
     .catch(next);
 };
 

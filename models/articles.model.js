@@ -53,3 +53,29 @@ exports.updateArticleByID = (id, { inc_votes }) => {
     )
     .then(({ rows }) => rows[0]);
 };
+
+exports.sendArticle = (reqBody) => {
+  const checkBody = checkArticleBodyComplete(reqBody);
+  if (!checkBody) return Promise.reject({ status: 400, msg: "Bad request - invalid request body" });
+  const { title, topic, body, author, article_img_url } = checkBody;
+  const queryArr = [title, topic, author, body];
+
+  const queryString = `
+  INSERT INTO articles
+  (title,topic,author,body${article_img_url ? ",article_img_url" : ""})
+  VALUES
+  ($1,$2,$3,$4${article_img_url ? ",$5" : ""})
+  RETURNING *`;
+
+  if (article_img_url) queryArr.push(article_img_url);
+
+  return db.query(queryString, queryArr).then(({ rows }) => rows[0]);
+};
+
+function checkArticleBodyComplete(body) {
+  const articleContents = { ...body };
+  if (!body.author || !body.title || !body.body || !body.topic) {
+    return null;
+  }
+  return articleContents;
+}

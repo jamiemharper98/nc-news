@@ -72,145 +72,245 @@ describe("/api/topics", () => {
 });
 
 describe("/api/articles", () => {
-  test("GET:200 responds with an array of article objects", () => {
-    return request(app)
-      .get("/api/articles")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
-        articles.forEach((article) => {
-          expect(article).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-            comment_count: expect.any(Number),
+  describe("GET", () => {
+    test("GET:200 responds with an array of article objects", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBe(13);
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+            expect(article.body).toBe(undefined);
           });
-          expect(article.body).toBe(undefined);
+          expect(articles).toBeSortedBy("created_at", { descending: true });
         });
-        expect(articles).toBeSortedBy("created_at", { descending: true });
-      });
+    });
+    test("GET:200 responds with an array of article objects and can be filtered by topic", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBe(12);
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              topic: "mitch",
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+            expect(article.body).toBe(undefined);
+          });
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("GET:404 responds with topic doesnt exist", () => {
+      return request(app)
+        .get("/api/articles?topic=banana")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("No articles found!");
+        });
+    });
+    test("GET:200 responds with an array of article objects and can be sorted by topic", () => {
+      return request(app)
+        .get("/api/articles?sort_by=topic")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBe(13);
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              topic: expect.any(String),
+              article_id: expect.any(Number),
+              title: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+            expect(article.body).toBe(undefined);
+          });
+          expect(articles).toBeSortedBy("topic", { descending: true });
+        });
+    });
+    test("GET:200 if given a sort_by that is not a column heading, default to created_at", () => {
+      return request(app)
+        .get("/api/articles?sort_by=banana")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBe(13);
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+            expect(article.body).toBe(undefined);
+          });
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("GET:200 responds with an array of article objects sorted ascending by created at", () => {
+      return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBe(13);
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+            expect(article.body).toBe(undefined);
+          });
+          expect(articles).toBeSortedBy("created_at", { descending: false });
+        });
+    });
+    test("GET:200 if order is not asc or desc than default to desc", () => {
+      return request(app)
+        .get("/api/articles?order=banana")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBe(13);
+          articles.forEach((article) => {
+            expect(article).toMatchObject({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(Number),
+            });
+            expect(article.body).toBe(undefined);
+          });
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
   });
-  test("GET:200 responds with an array of article objects and can be filtered by topic", () => {
-    return request(app)
-      .get("/api/articles?topic=mitch")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(12);
-        articles.forEach((article) => {
+
+  describe("POST", () => {
+    test("POST:201 responds with the new article with added info - no img will default", () => {
+      const toSend = {
+        author: "butter_bridge",
+        title: "butterboy",
+        body: "butter bridge is the most buttery",
+        topic: "mitch",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(toSend)
+        .expect(201)
+        .then(({ body: { article } }) => {
           expect(article).toMatchObject({
-            author: expect.any(String),
+            author: "butter_bridge",
+            title: "butterboy",
+            body: "butter bridge is the most buttery",
             topic: "mitch",
-            article_id: expect.any(Number),
-            title: expect.any(String),
+            article_img_url: "https://images.pexels.com/photos/97050/pexels-photo-97050.jpeg?w=700&h=700",
+            article_id: 14,
+            votes: 0,
             created_at: expect.any(String),
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-            comment_count: expect.any(Number),
+            comment_count: 0,
           });
-          expect(article.body).toBe(undefined);
         });
-        expect(articles).toBeSortedBy("created_at", { descending: true });
-      });
-  });
-  test("GET:404 responds with topic doesnt exist", () => {
-    return request(app)
-      .get("/api/articles?topic=banana")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("No articles found!");
-      });
-  });
-  test("GET:200 responds with an array of article objects and can be sorted by topic", () => {
-    return request(app)
-      .get("/api/articles?sort_by=topic")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
-        articles.forEach((article) => {
+    });
+    test("POST:201 responds with the new article with added info with img", () => {
+      const toSend = {
+        author: "butter_bridge",
+        title: "butterboy",
+        body: "butter bridge is the most buttery",
+        topic: "mitch",
+        article_img_url: "imgpathforbutterbridge",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(toSend)
+        .expect(201)
+        .then(({ body: { article } }) => {
           expect(article).toMatchObject({
-            author: expect.any(String),
-            topic: expect.any(String),
-            article_id: expect.any(Number),
-            title: expect.any(String),
+            author: "butter_bridge",
+            title: "butterboy",
+            body: "butter bridge is the most buttery",
+            topic: "mitch",
+            article_img_url: "imgpathforbutterbridge",
+            article_id: 14,
+            votes: 0,
             created_at: expect.any(String),
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-            comment_count: expect.any(Number),
+            comment_count: 0,
           });
-          expect(article.body).toBe(undefined);
         });
-        expect(articles).toBeSortedBy("topic", { descending: true });
-      });
-  });
-  test("GET:200 if given a sort_by that is not a column heading, default to created_at", () => {
-    return request(app)
-      .get("/api/articles?sort_by=banana")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
-        articles.forEach((article) => {
-          expect(article).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-            comment_count: expect.any(Number),
-          });
-          expect(article.body).toBe(undefined);
+    });
+    test("POST:400 if any of required properties missing return bad request", () => {
+      const toSend = {
+        author: "butter_bridge",
+        body: "butter bridge is the most buttery",
+        topic: "butter",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(toSend)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request - invalid request body");
         });
-        expect(articles).toBeSortedBy("created_at", { descending: true });
-      });
-  });
-  test("GET:200 responds with an array of article objects sorted ascending by created at", () => {
-    return request(app)
-      .get("/api/articles?order=asc")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
-        articles.forEach((article) => {
-          expect(article).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-            comment_count: expect.any(Number),
-          });
-          expect(article.body).toBe(undefined);
+    });
+    test("POST:404 if username does not exist", () => {
+      const toSend = {
+        author: "banana",
+        title: "butterboy",
+        body: "butter bridge is the most buttery",
+        topic: "butter",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(toSend)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Username does not exist!");
         });
-        expect(articles).toBeSortedBy("created_at", { descending: false });
-      });
-  });
-  test("GET:200 if order is not asc or desc than default to desc", () => {
-    return request(app)
-      .get("/api/articles?order=banana")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles.length).toBe(13);
-        articles.forEach((article) => {
-          expect(article).toMatchObject({
-            author: expect.any(String),
-            title: expect.any(String),
-            article_id: expect.any(Number),
-            topic: expect.any(String),
-            created_at: expect.any(String),
-            votes: expect.any(Number),
-            article_img_url: expect.any(String),
-            comment_count: expect.any(Number),
-          });
-          expect(article.body).toBe(undefined);
+    });
+    test("POST:400 cant create an article for a topic that does not yet exist", () => {
+      const toSend = {
+        author: "butter_bridge",
+        title: "butterboy",
+        body: "butter bridge is the most buttery",
+        topic: "butter",
+      };
+      return request(app)
+        .post("/api/articles")
+        .send(toSend)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
         });
-        expect(articles).toBeSortedBy("created_at", { descending: true });
-      });
+    });
   });
 });
 
