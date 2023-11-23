@@ -10,7 +10,10 @@ const { selectUserByUsername } = require("../models/users.model");
 
 exports.getCommentsByArticleID = (req, res, next) => {
   const { article_id } = req.params;
-  selectCommentsByArticleId(article_id)
+  const query = req.query;
+  if (!query.limit) query.limit = "10";
+  if (!query.p) query.p = "1";
+  selectCommentsByArticleId(article_id, query)
     .then((comments) => res.status(200).send({ comments }))
     .catch(next);
 };

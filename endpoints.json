@@ -44,7 +44,7 @@
     }
   },
   "GET /api/articles/:article_id/comments": {
-    "description": "responds with all of the comments related to an article id default sorted by created_at ascending",
+    "description": "responds with all of the comments related to an article id default sorted by created_at ascending. Defaults to a limit of 10 and a default page of 1",
     "queries": [],
     "exampleResponse": {
       "comments": [
@@ -60,7 +60,7 @@
     }
   },
   "POST /api/articles/:article_id/comments": {
-    "description": "responds with the posted comment when provided a username and a comment, and a valid article id",
+    "description": "responds with the posted comment when provided a username and a comment, and a valid article id.",
     "queries": [],
     "exampleResponse": {
       "comment": {

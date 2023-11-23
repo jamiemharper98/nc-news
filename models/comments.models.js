@@ -7,17 +7,21 @@ exports.selectCommentByID = (id) => {
   });
 };
 
-exports.selectCommentsByArticleId = (id) => {
-  return selectArticleByID(id).then(() => {
-    return db
-      .query(
+exports.selectCommentsByArticleId = (id, { limit, p }) => {
+  if (!/\d/.test(+limit) || !/\d/.test(+p)) return Promise.reject({ status: 400, msg: "Bad request" });
+  const offset = +limit * +p - limit;
+  
+  return selectArticleByID(id)
+    .then(() => {
+      return db.query(
         `SELECT * FROM comments 
   WHERE comments.article_id = $1 
-  ORDER BY comments.created_at`,
-        [id]
-      )
-      .then(({ rows }) => rows);
-  });
+  ORDER BY comments.created_at
+  LIMIT $2 OFFSET $3`,
+        [id, limit, offset]
+      );
+    })
+    .then(({ rows }) => rows);
 };
 
 exports.sendCommentByArticleID = (id, { username, body }) => {

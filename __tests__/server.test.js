@@ -96,7 +96,7 @@ describe("/api/articles", () => {
           expect(articles).toBeSortedBy("created_at", { descending: true });
         });
     });
-    test("GET:200 responds with an array of article objects and can be filtered by topic", () => {
+    test("GET:200 responds with an array of article objects and can be filtered by topic total count should also reflect the filtering", () => {
       return request(app)
         .get("/api/articles?topic=mitch")
         .expect(200)
@@ -515,12 +515,12 @@ describe("/api/articles/:article_id", () => {
 
 describe("/api/articles/:article_id/comments", () => {
   describe("GET", () => {
-    test("GET:200 responds with array of comments for given article id", () => {
+    test("GET:200 responds with array of comments for given article id default limit 10", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .expect(200)
         .then(({ body: { comments } }) => {
-          expect(comments.length).toBe(11);
+          expect(comments.length).toBe(10);
           expect(comments).toBeSortedBy("created_at");
           comments.forEach((comment) => {
             expect(comment.article_id).toBe(1);
@@ -528,6 +528,67 @@ describe("/api/articles/:article_id/comments", () => {
               comment_id: expect.any(Number),
               votes: expect.any(Number),
               created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            });
+          });
+        });
+    });
+    test("GET:200 responds with array of comments for given limit of 5", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=5")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toBe(5);
+          expect(comments).toBeSortedBy("created_at");
+          comments.forEach((comment) => {
+            expect(comment.article_id).toBe(1);
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            });
+          });
+        });
+    });
+    test("GET:400 responds bad request if limit not number", () => {
+      return request(app)
+        .get("/api/articles/1/comments?limit=banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+    test("GET:400 responds bad request if p not number", () => {
+      return request(app)
+        .get("/api/articles/1/comments?p=banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+    test("GET:200 responds with array of comments for given limit of 5 second page", () => {
+      const expectedDates = [
+        "2020-10-31T03:03:00.000Z",
+        "2020-07-21T00:20:00.000Z",
+        "2020-06-15T10:25:00.000Z",
+        "2020-05-15T20:19:00.000Z",
+        "2020-04-14T20:19:00.000Z",
+      ];
+      return request(app)
+        .get("/api/articles/1/comments?limit=5&p=2")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toBe(5);
+          expect(comments).toBeSortedBy("created_at");
+          comments.forEach((comment) => {
+            expect(comment.article_id).toBe(1);
+            expect(expectedDates.includes(comment.created_at)).toBe(true);
+            expect(comment).toMatchObject({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
               author: expect.any(String),
               body: expect.any(String),
             });
