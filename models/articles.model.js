@@ -86,6 +86,10 @@ exports.sendArticle = (reqBody) => {
   return db.query(queryString, queryArr).then(({ rows }) => rows[0]);
 };
 
+exports.removeArticleByID = (id) => {
+  return db.query(`DELETE FROM articles WHERE article_id = $1`, [id]);
+};
+
 function checkArticleBodyComplete(body) {
   const articleContents = { ...body };
   if (!body.author || !body.title || !body.body || !body.topic) {

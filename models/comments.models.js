@@ -10,7 +10,7 @@ exports.selectCommentByID = (id) => {
 exports.selectCommentsByArticleId = (id, { limit, p }) => {
   if (!/\d/.test(+limit) || !/\d/.test(+p)) return Promise.reject({ status: 400, msg: "Bad request" });
   const offset = +limit * +p - limit;
-  
+
   return selectArticleByID(id)
     .then(() => {
       return db.query(
@@ -70,4 +70,8 @@ exports.updateCommentByID = (id, votes) => {
 exports.checkCommentBodyCorrect = ({ username, body }) => {
   if (!body || !username) return Promise.reject({ status: 400, msg: "Bad request - incomplete request body" });
   else return Promise.resolve();
+};
+
+exports.selectAllComments = () => {
+  return db.query(`SELECT * FROM comments;`).then(({ rows }) => rows);
 };

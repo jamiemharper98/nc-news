@@ -9,6 +9,13 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "POST /api/topics": {
+    "description": "Takes a slug and a description and if topic doesnt exist created a new one and returns it back to you",
+    "queries": [],
+    "exampleResponse": {
+      "topic": { "slug": "football", "description": "Footie!" }
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all articles defaults to sort by date in descending order",
     "queries": ["author", "topic", "sort_by", "order"],
@@ -43,9 +50,29 @@
       }
     }
   },
+  "PATCH /api/articles/:article_id": {
+    "description": "responds with the updated article when provided a votes value to increase by and a valid article id",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "title": "Living in the shadow of a great man",
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "body": "I find this existence challenging",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 101,
+        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      }
+    }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "responds with an no content if correct article id used and deletes relevant comments to the article",
+    "queries": [],
+    "exampleResponse": {}
+  },
   "GET /api/articles/:article_id/comments": {
     "description": "responds with all of the comments related to an article id default sorted by created_at ascending. Defaults to a limit of 10 and a default page of 1",
-    "queries": [],
+    "queries": ["limit", "p"],
     "exampleResponse": {
       "comments": [
         {
@@ -73,21 +100,6 @@
       }
     }
   },
-  "PATCH /api/articles/:article_id": {
-    "description": "responds with the updated article when provided a votes value to increase by and a valid article id",
-    "queries": [],
-    "exampleResponse": {
-      "article": {
-        "title": "Living in the shadow of a great man",
-        "topic": "mitch",
-        "author": "butter_bridge",
-        "body": "I find this existence challenging",
-        "created_at": "2018-05-30T15:59:13.341Z",
-        "votes": 101,
-        "article_img_url": "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
-      }
-    }
-  },
   "GET /api/users": {
     "description": "responds with an array of all of the users",
     "queries": [],
@@ -101,11 +113,6 @@
       ]
     }
   },
-  "delete /api/comments/:comment_id": {
-    "description": "responds with no content when provided with a correct comment ID to delete",
-    "queries": [],
-    "exampleResponse": {}
-  },
   "GET /api/users/:username": {
     "description": "responds with a user object",
     "queries": [],
@@ -116,6 +123,11 @@
         "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
       }
     }
+  },
+  "delete /api/comments/:comment_id": {
+    "description": "responds with no content when provided with a correct comment ID to delete",
+    "queries": [],
+    "exampleResponse": {}
   },
   "PACTH /api/comments/:comment_id": {
     "description": "responds with the updated comment when provided with a votes change ({inc_votes:1})",
@@ -146,6 +158,22 @@
         "comment_count": 0,
         "created_at": "2018-05-30T15:59:13.341Z"
       }
+    }
+  },
+  "GET /api/comments": {
+    "description": "responds with an array of all the comments",
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+          "author": "butter_bridge",
+          "body": "butter bridge is the most buttery",
+          "article_id": 14,
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_id": 1
+        }
+      ]
     }
   }
 }

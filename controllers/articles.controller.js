@@ -1,4 +1,10 @@
-const { selectArticles, selectArticleByID, updateArticleByID, sendArticle } = require("../models/articles.model");
+const {
+  selectArticles,
+  selectArticleByID,
+  updateArticleByID,
+  sendArticle,
+  removeArticleByID,
+} = require("../models/articles.model");
 const { columnNames, orderBy } = require("../db/data/greenlist/articles.greenlist");
 const { selectUserByUsername } = require("../models/users.model");
 
@@ -34,6 +40,16 @@ exports.postArticle = (req, res, next) => {
     })
     .then((article) => selectArticleByID(article.article_id))
     .then((article) => res.status(201).send({ article }))
+    .catch(next);
+};
+
+exports.deleteArticleByID = (req, res, next) => {
+  const { article_id } = req.params;
+  selectArticleByID(article_id)
+    .then(() => {
+      return removeArticleByID(article_id);
+    })
+    .then(() => res.sendStatus(204))
     .catch(next);
 };
 

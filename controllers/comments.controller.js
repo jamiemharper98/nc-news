@@ -5,6 +5,7 @@ const {
   removeCommentByID,
   updateCommentByID,
   selectCommentByID,
+  selectAllComments,
 } = require("../models/comments.models");
 const { selectUserByUsername } = require("../models/users.model");
 
@@ -50,4 +51,8 @@ exports.patchCommentByID = (req, res, next) => {
     })
     .then((comment) => res.status(200).send({ comment }))
     .catch(next);
+};
+
+exports.getAllComments = (req, res, next) => {
+  selectAllComments().then((comments) => res.status(200).send({ comments }));
 };

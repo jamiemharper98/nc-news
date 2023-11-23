@@ -57,17 +57,72 @@ describe("/api", () => {
 });
 
 describe("/api/topics", () => {
-  test("GET:200 /api/topics responds with an array of topic objects", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(200)
-      .then(({ body }) => {
-        expect(body.topics.length).toBe(3);
-        body.topics.forEach((topic) => {
-          expect(typeof topic.slug).toBe("string");
-          expect(typeof topic.description).toBe("string");
+  describe("GET", () => {
+    test("GET:200 /api/topics responds with an array of topic objects", () => {
+      return request(app)
+        .get("/api/topics")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.topics.length).toBe(3);
+          body.topics.forEach((topic) => {
+            expect(typeof topic.slug).toBe("string");
+            expect(typeof topic.description).toBe("string");
+          });
         });
-      });
+    });
+  });
+
+  describe("POST", () => {
+    test("POST:201 responds with a topic object with new topic", () => {
+      const toSend = { slug: "butter", description: "home of butter bridge" };
+      return request(app)
+        .post("/api/topics")
+        .send(toSend)
+        .expect(201)
+        .expect(({ body: { topic } }) => {
+          expect(topic).toMatchObject({ ...toSend });
+        });
+    });
+    test("POST:400 bad request if topic already exists", () => {
+      const toSend = { slug: "mitch", description: "home of butter bridge" };
+      return request(app)
+        .post("/api/topics")
+        .send(toSend)
+        .expect(400)
+        .expect(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+    test("POST:400 bad request if topic missing", () => {
+      const toSend = { description: "home of butter bridge" };
+      return request(app)
+        .post("/api/topics")
+        .send(toSend)
+        .expect(400)
+        .expect(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+    test("POST:400 bad request if description missing", () => {
+      const toSend = { slug: "butter" };
+      return request(app)
+        .post("/api/topics")
+        .send(toSend)
+        .expect(400)
+        .expect(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+    test("POST:400 bad request if no empty request body", () => {
+      const toSend = {};
+      return request(app)
+        .post("/api/topics")
+        .send(toSend)
+        .expect(400)
+        .expect(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
   });
 });
 
@@ -511,6 +566,44 @@ describe("/api/articles/:article_id", () => {
         });
     });
   });
+
+  describe("DELETE", () => {
+    test("DELETE:204 responds 204 if deleted", () => {
+      return request(app)
+        .delete("/api/articles/1")
+        .expect(204)
+        .then(({ body }) => {
+          expect(body).toMatchObject({});
+        });
+    });
+    test("DELETE:204 should delete relatvant comments ", () => {
+      return request(app)
+        .delete("/api/articles/1")
+        .expect(204)
+        .then(() => {
+          return request(app).get("/api/comments").expect(200);
+        })
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toBe(7);
+        });
+    });
+    test("DELETE:400 bad request if id not a number", () => {
+      return request(app)
+        .delete("/api/articles/banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
+        });
+    });
+    test("DELETE:404 article does not exist", () => {
+      return request(app)
+        .delete("/api/articles/999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article ID does not exist!");
+        });
+    });
+  });
 });
 
 describe("/api/articles/:article_id/comments", () => {
@@ -845,6 +938,29 @@ describe("/api/users/:username", () => {
         .expect(400)
         .then(({ body }) => {
           expect(body.msg).toBe("Bad request");
+        });
+    });
+  });
+});
+
+describe("/api/comments", () => {
+  describe("GET", () => {
+    test("GET:200 responds with a list of all comments", () => {
+      return request(app)
+        .get("/api/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments.length).toBe(18);
+          comments.forEach((comment) => {
+            expect(comment).toMatchObject({
+              body: expect.any(String),
+              votes: expect.any(Number),
+              author: expect.any(String),
+              article_id: expect.any(Number),
+              created_at: expect.any(String),
+              comment_id: expect.any(Number),
+            });
+          });
         });
     });
   });
