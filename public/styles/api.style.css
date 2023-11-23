@@ -1,0 +1,53 @@
+:root {
+  --blue: rgb(60, 85, 224);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Gill Sans", sans-serif;
+  background-color: rgb(201, 204, 224);
+  line-height: 1;
+  font-size: 16px;
+}
+
+header {
+  padding-block: 1em;
+  margin-bottom: 2em;
+  background-color: var(--blue);
+  color: whitesmoke;
+}
+
+h1,
+h2 {
+  text-align: center;
+  font-size: 1.5em;
+}
+
+/* for api end point boxes */
+.content {
+  width: 90%;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+
+h3 {
+  color: var(--blue);
+  font-size: 1.5em;
+  text-decoration: underline;
+}
+
+.api-content {
+  background-color: rgb(221, 221, 201);
+  padding: 2em;
+  margin-block: 3em;
+  box-shadow: 10px 10px 5px 2px #504f4f;
+  border: 2px solid var(--blue);
+  border-radius: 15px;
+  line-height: 2;
+  font-size: 1em;
+}

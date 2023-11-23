@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link type="text/css" rel="stylesheet" href="styles/api.style.css" />
+        <title>news API docs</title>
+      </head>
+      <body>
+        <header>
+          <h1>Documentation for news API</h1>
+        </header>
+        <main class="content" id="api-content">
+          <h2 id="subheader">This page contains all of the avaliable endpoints on this API</h2>
+          <div class="api-content">
+          <h3>GET /api/topics</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- serves an array of all topics</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"topics":[{"slug":"football","description":"Footie!"}]}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>POST /api/topics</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- Takes a slug and a description and if topic doesnt exist created a new one and returns it back to you</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"topic":{"slug":"football","description":"Footie!"}}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>GET /api/articles</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- serves an array of all articles defaults to sort by date in descending order</dd>
+            <dt>Queries</dt>
+            <dd>- ["author","topic","sort_by","order"]</dd>
+            <dt>Example Response</dt>
+            <dd>- {"total_count":13,"articles":[{"title":"Seafood substitutions are increasing","topic":"cooking","author":"weegembump","article_id":1,"created_at":"2018-05-30T15:59:13.341Z","votes":0,"comment_count":6,"article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"}]}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>GET /api/articles/:article_id</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with the article when passed the articles id</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"article":{"title":"Living in the shadow of a great man","topic":"mitch","author":"butter_bridge","body":"I find this existence challenging","created_at":"2018-05-30T15:59:13.341Z","votes":100,"article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"}}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>PATCH /api/articles/:article_id</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with the updated article when provided a votes value to increase by and a valid article id</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"article":{"title":"Living in the shadow of a great man","topic":"mitch","author":"butter_bridge","body":"I find this existence challenging","created_at":"2018-05-30T15:59:13.341Z","votes":101,"article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"}}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>DELETE /api/articles/:article_id</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with an no content if correct article id used and deletes relevant comments to the article</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>GET /api/articles/:article_id/comments</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with all of the comments related to an article id default sorted by created_at ascending. Defaults to a limit of 10 and a default page of 1</dd>
+            <dt>Queries</dt>
+            <dd>- ["limit","p"]</dd>
+            <dt>Example Response</dt>
+            <dd>- {"comments":[{"comment_id":5,"body":"I hate streaming noses","votes":0,"author":"icellusedkars","article_id":1,"created_at":"2018-05-30T15:59:13.341Z"}]}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>POST /api/articles/:article_id/comments</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with the posted comment when provided a username and a comment, and a valid article id.</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"comment":{"comment_id":5,"body":"I hate streaming noses","votes":0,"author":"icellusedkars","article_id":1,"created_at":"2018-05-30T15:59:13.341Z"}}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>GET /api/users</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with an array of all of the users</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"users":[{"username":"butter_bridge","name":"jonny","avatar_url":"https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"}]}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>GET /api/users/:username</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with a user object</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"user":{"username":"butter_bridge","name":"jonny","avatar_url":"https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"}}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>delete /api/comments/:comment_id</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with no content when provided with a correct comment ID to delete</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>PACTH /api/comments/:comment_id</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with the updated comment when provided with a votes change ({inc_votes:1})</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"comment":{"comment_id":1,"body":"Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!","votes":17,"author":"butter_bridge","article_id":9,"created_at":"2018-05-30T15:59:13.341Z"}}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>POST /api/articles</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with the new article, with added defaults and a comment coun - requires an author (whose username exists), a title, a body and a topic (that exists as a topic already)</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"article":{"author":"butter_bridge","title":"butterboy","body":"butter bridge is the most buttery","topic":"mitch","article_img_url":"imgpathforbutterbridge","article_id":14,"votes":0,"comment_count":0,"created_at":"2018-05-30T15:59:13.341Z"}}</dd>
+          </dl>
+        </div>
+          <div class="api-content">
+          <h3>GET /api/comments</h3>
+          <dl>
+            <dt>Description</dt>
+            <dd>- responds with an array of all the comments</dd>
+            <dt>Queries</dt>
+            <dd>- []</dd>
+            <dt>Example Response</dt>
+            <dd>- {"comments":[{"author":"butter_bridge","body":"butter bridge is the most buttery","article_id":14,"created_at":"2018-05-30T15:59:13.341Z","votes":0,"comment_id":1}]}</dd>
+          </dl>
+        </div>    
+    </main>
+    </body>
+  </html>
