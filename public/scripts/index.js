@@ -8,7 +8,7 @@ articleButton.addEventListener("click", function (e) {
   apiContent.forEach((node) => {
     node.classList.toggle("invisible");
   });
-  fetch("http://localhost:9090/api/articles", {
+  fetch("https://nc-news-api-cu9g.onrender.com/api/articles", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
