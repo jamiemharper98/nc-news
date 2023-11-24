@@ -4,15 +4,17 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link type="text/css" rel="stylesheet" href="styles/api.style.css" />
+        <script defer src="scripts/index.js"></script>
         <title>news API docs</title>
       </head>
       <body>
         <header>
-          <h1>Documentation for news API</h1>
+          <h1 class='header'>Documentation for news API</h1>
+          <p class='to-articles'><a>Articles</a></p>
         </header>
-        <main class="content" id="api-content">
-          <h2 id="subheader">This page contains all of the avaliable endpoints on this API</h2>
-          <div class="api-content">
+        <main class="content">
+          <h2 class="subheader">This page contains all of the avaliable endpoints on this API</h2>
+          <div class="main-content api-content">
           <h3>GET /api/topics</h3>
           <dl>
             <dt>Description</dt>
@@ -23,7 +25,7 @@
             <dd>- {"topics":[{"slug":"football","description":"Footie!"}]}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>POST /api/topics</h3>
           <dl>
             <dt>Description</dt>
@@ -34,7 +36,7 @@
             <dd>- {"topic":{"slug":"football","description":"Footie!"}}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>GET /api/articles</h3>
           <dl>
             <dt>Description</dt>
@@ -45,7 +47,7 @@
             <dd>- {"total_count":13,"articles":[{"title":"Seafood substitutions are increasing","topic":"cooking","author":"weegembump","article_id":1,"created_at":"2018-05-30T15:59:13.341Z","votes":0,"comment_count":6,"article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"}]}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>GET /api/articles/:article_id</h3>
           <dl>
             <dt>Description</dt>
@@ -56,7 +58,7 @@
             <dd>- {"article":{"title":"Living in the shadow of a great man","topic":"mitch","author":"butter_bridge","body":"I find this existence challenging","created_at":"2018-05-30T15:59:13.341Z","votes":100,"article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"}}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>PATCH /api/articles/:article_id</h3>
           <dl>
             <dt>Description</dt>
@@ -67,7 +69,7 @@
             <dd>- {"article":{"title":"Living in the shadow of a great man","topic":"mitch","author":"butter_bridge","body":"I find this existence challenging","created_at":"2018-05-30T15:59:13.341Z","votes":101,"article_img_url":"https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"}}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>DELETE /api/articles/:article_id</h3>
           <dl>
             <dt>Description</dt>
@@ -78,7 +80,7 @@
             <dd>- {}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>GET /api/articles/:article_id/comments</h3>
           <dl>
             <dt>Description</dt>
@@ -89,7 +91,7 @@
             <dd>- {"comments":[{"comment_id":5,"body":"I hate streaming noses","votes":0,"author":"icellusedkars","article_id":1,"created_at":"2018-05-30T15:59:13.341Z"}]}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>POST /api/articles/:article_id/comments</h3>
           <dl>
             <dt>Description</dt>
@@ -100,7 +102,7 @@
             <dd>- {"comment":{"comment_id":5,"body":"I hate streaming noses","votes":0,"author":"icellusedkars","article_id":1,"created_at":"2018-05-30T15:59:13.341Z"}}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>GET /api/users</h3>
           <dl>
             <dt>Description</dt>
@@ -111,7 +113,7 @@
             <dd>- {"users":[{"username":"butter_bridge","name":"jonny","avatar_url":"https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"}]}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>GET /api/users/:username</h3>
           <dl>
             <dt>Description</dt>
@@ -122,7 +124,7 @@
             <dd>- {"user":{"username":"butter_bridge","name":"jonny","avatar_url":"https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"}}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>delete /api/comments/:comment_id</h3>
           <dl>
             <dt>Description</dt>
@@ -133,7 +135,7 @@
             <dd>- {}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>PACTH /api/comments/:comment_id</h3>
           <dl>
             <dt>Description</dt>
@@ -144,7 +146,7 @@
             <dd>- {"comment":{"comment_id":1,"body":"Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!","votes":17,"author":"butter_bridge","article_id":9,"created_at":"2018-05-30T15:59:13.341Z"}}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>POST /api/articles</h3>
           <dl>
             <dt>Description</dt>
@@ -155,7 +157,7 @@
             <dd>- {"article":{"author":"butter_bridge","title":"butterboy","body":"butter bridge is the most buttery","topic":"mitch","article_img_url":"imgpathforbutterbridge","article_id":14,"votes":0,"comment_count":0,"created_at":"2018-05-30T15:59:13.341Z"}}</dd>
           </dl>
         </div>
-          <div class="api-content">
+          <div class="main-content api-content">
           <h3>GET /api/comments</h3>
           <dl>
             <dt>Description</dt>
