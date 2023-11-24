@@ -18,7 +18,14 @@ exports.getApi = (req, res, next) => {
       <body>
         <header>
           <h1 class='header'>Documentation for news API</h1>
-          <p class='to-articles'><a>Articles</a></p>
+          <div class='navigator'>
+            <ul>
+              <li><a class='to-articles'>Articles</a></li>
+              <li><a class=''>Topics</a></li>
+              <li><a class=''>Comments</a></li>
+              <li><a class=''>Users</a></li>
+            </ul>
+          </div>
         </header>
         <main class="content">
           <h2 class="subheader">This page contains all of the avaliable endpoints on this API</h2>`;
@@ -26,19 +33,18 @@ exports.getApi = (req, res, next) => {
         if (key !== "GET /api") {
           htmlString += `
           <div class="main-content api-content">
-          <h3>${key}</h3>
-          <dl>
-            <dt>Description</dt>
-            <dd>- ${endpoints[key].description}</dd>
-            <dt>Queries</dt>
-            <dd>- ${JSON.stringify(endpoints[key].queries)}</dd>
-            <dt>Example Response</dt>
-            <dd>- ${JSON.stringify(endpoints[key].exampleResponse)}</dd>
-          </dl>
+            <h3>${key}</h3>
+            <dl>
+              <dt>Description</dt>
+              <dd>- ${endpoints[key].description}</dd>
+              <dt>Queries</dt>
+              <dd>- ${JSON.stringify(endpoints[key].queries)}</dd>
+              <dt>Example Response</dt>
+              <dd>- ${JSON.stringify(endpoints[key].exampleResponse)}</dd>
+            </dl>
         </div>`;
         }
       }
-      // document.getElementById("api-content").insertAdjacentHTML("beforeend", htmlString);
       htmlString += `    
     </main>
     </body>
