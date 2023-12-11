@@ -4,9 +4,9 @@ const { psqlErrors, customErrors, serverErrors, wrongPath } = require("./db/erro
 const apiRouter = require("./routes/api.router");
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
-app.use(cors());
 
 app.use("/api", apiRouter);
 
