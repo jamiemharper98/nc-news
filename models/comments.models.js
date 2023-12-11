@@ -16,7 +16,7 @@ exports.selectCommentsByArticleId = (id, { limit, p }) => {
       return db.query(
         `SELECT * FROM comments 
   WHERE comments.article_id = $1 
-  ORDER BY comments.created_at
+  ORDER BY comments.created_at DESC
   LIMIT $2 OFFSET $3`,
         [id, limit, offset]
       );
