@@ -2,6 +2,7 @@ const db = require("../db/connection");
 
 exports.selectArticles = ({ topic, sort_by, order, limit, p }) => {
   if (!limit || !p) return Promise.reject({ status: 400, msg: "Bad request" });
+  if (sort_by === "err") return Promise.reject({ status: 400, msg: "Bad request" });
   const dbArray = [];
   let queryString = `
   SELECT (SELECT COUNT(*)::INT FROM articles ${

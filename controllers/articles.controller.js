@@ -57,7 +57,7 @@ function articleQuery(queryObj) {
   const defaultQuery = { sort_by: "created_at", order: "DESC", topic: null, limit: 10, p: 1 };
 
   for (const key in queryObj) {
-    if (key === "sort_by") defaultQuery[key] = columnNames.includes(queryObj[key]) ? queryObj[key] : "created_at";
+    if (key === "sort_by") defaultQuery[key] = columnNames.includes(queryObj[key]) ? queryObj[key] : "err";
     if (key === "order")
       defaultQuery[key] = orderBy.includes(queryObj[key].toUpperCase()) ? queryObj[key].toUpperCase() : "DESC";
     if (key === "topic") defaultQuery[key] = queryObj[key];
