@@ -17,7 +17,7 @@ exports.selectArticles = ({ topic, sort_by, order, limit, p }) => {
 
   queryString += `
   GROUP BY articles.article_id
-  ORDER BY articles.${sort_by} ${order}
+  ORDER BY ${sort_by} ${order}
   LIMIT ${limit} OFFSET ${limit * p - limit}`;
 
   return db.query(queryString, dbArray).then(({ rows }) => {
