@@ -59,7 +59,7 @@ function articleQuery(queryObj) {
   for (const key in queryObj) {
     if (key === "sort_by") defaultQuery[key] = columnNames.includes(queryObj[key]) ? queryObj[key] : "err";
     if (key === "order")
-      defaultQuery[key] = orderBy.includes(queryObj[key].toUpperCase()) ? queryObj[key].toUpperCase() : "DESC";
+      defaultQuery[key] = orderBy.includes(queryObj[key].toUpperCase()) ? queryObj[key].toUpperCase() : "err";
     if (key === "topic") defaultQuery[key] = queryObj[key];
     if (key === "limit") defaultQuery[key] = /\d/.test(queryObj[key]) ? queryObj[key] : queryObj[key] ? null : 10;
     if (key === "p") defaultQuery[key] = /\d/.test(queryObj[key]) ? queryObj[key] : queryObj[key] ? null : 1;

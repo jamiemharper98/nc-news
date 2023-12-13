@@ -257,25 +257,29 @@ describe("/api/articles", () => {
     test("GET:200 if order is not asc or desc than default to desc", () => {
       return request(app)
         .get("/api/articles?order=banana")
-        .expect(200)
-        .then(({ body: { articles, total_count } }) => {
-          expect(total_count).toBe(13);
-          expect(articles.length).toBe(10);
-          articles.forEach((article) => {
-            expect(article).toMatchObject({
-              author: expect.any(String),
-              title: expect.any(String),
-              article_id: expect.any(Number),
-              topic: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              article_img_url: expect.any(String),
-              comment_count: expect.any(Number),
-            });
-            expect(article.body).toBe(undefined);
-          });
-          expect(articles).toBeSortedBy("created_at", { descending: true });
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad request");
         });
+      // .expect(200)
+      // .then(({ body: { articles, total_count } }) => {
+      //   expect(total_count).toBe(13);
+      //   expect(articles.length).toBe(10);
+      //   articles.forEach((article) => {
+      //     expect(article).toMatchObject({
+      //       author: expect.any(String),
+      //       title: expect.any(String),
+      //       article_id: expect.any(Number),
+      //       topic: expect.any(String),
+      //       created_at: expect.any(String),
+      //       votes: expect.any(Number),
+      //       article_img_url: expect.any(String),
+      //       comment_count: expect.any(Number),
+      //     });
+      //     expect(article.body).toBe(undefined);
+      //   });
+      //   expect(articles).toBeSortedBy("created_at", { descending: true });
+      // });
     });
     test("GET:200 if limit is 5 return 5", () => {
       return request(app)
