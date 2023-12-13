@@ -1,5 +1,4 @@
 exports.wrongPath = (req, res, next) => {
-  console.log('errr')
   return Promise.reject({ status: 400, msg: "Bad request" }).catch(next);
 };
 
